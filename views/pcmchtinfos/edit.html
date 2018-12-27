@@ -1,0 +1,17 @@
+<form id="thisForm">
+    {{/*<input type="hidden" name="MchtCd" id="MchtCd" value="{{.m.MchtCd}}">*/}}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>商户号</label>
+                <input type="text" name="MchtCd" class="form-control" placeholder="长度不超过24" value="{{.m.MchtCd}}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>终端号</label>
+                <input type="text" name="TermId" class="form-control" placeholder="长度不超过16" value="{{.m.TermId}}">
+            </div>
+        </div>
+    </div>
+</form>
