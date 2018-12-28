@@ -3,6 +3,7 @@
 import (
 	"time"
 	"github.com/astaxie/beego/orm"
+	"strings"
 )
 
 type PcMchtInfosQueryParam struct {
@@ -49,8 +50,15 @@ func (a *PcMchtInfos) TableUnique() [][]string {
 }
 func PcMchtInfosOne(MchtCd string) (*PcMchtInfos, error) {
 	o := orm.NewOrm()
-	m := PcMchtInfos{MchtCd: MchtCd}
-	err := o.Read(&m)
+	mt := strings.Split(MchtCd, "-")
+	mc := mt[0]
+	tc := ""
+	if len(mt) > 1 {
+		tc = mc[len(mc)-4:] + mt[1]
+	}
+
+	m := PcMchtInfos{MchtCd: mc, TermId: tc}
+	err := o.QueryTable(m.TableName()).Filter("MCHT_CD", mc).Filter("TERM_ID", tc).One(&m)
 	if err != nil {
 		return nil, err
 	}

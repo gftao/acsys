@@ -44,7 +44,7 @@ func (c *PcMchtInfosController) DataGrid() {
 	var params models.PcMchtInfosQueryParam
 	json.Unmarshal(c.Ctx.Input.RequestBody, &params)
 	//获取数据列表和总数
-	fmt.Println("--[DataGrid]-->", params)
+	//fmt.Println("--[DataGrid]-->", params)
 	data, total := models.PcMchtInfosPageList(&params)
 	//定义返回的数据结构
 	result := make(map[string]interface{})
@@ -59,6 +59,7 @@ func (c *PcMchtInfosController) Edit() {
 		c.Save()
 	}
 	MchtCd := c.GetString(":MchtCd", "")
+	fmt.Println("--[MchtCd]-->", MchtCd)
 	m := &models.PcMchtInfos{}
 	var err error
 	if MchtCd != "" {
@@ -80,8 +81,13 @@ func (c *PcMchtInfosController) Save() {
 	if err = c.ParseForm(&m); err != nil {
 		c.jsonResult(enums.JRCodeFailed, "获取数据失败", 0)
 	}
+	fmt.Printf("[[[PcMchtInfos]]]=%+v", m)
+	termID := m.MchtCd[len(m.MchtCd)-4:] + m.TermId
 	m.RecUpdTs = time.Now()
-	if _, err := o.Update(&m, "ACTIVE_FLG", "REC_UPD_TS"); err != nil {
+	if _, err := o.QueryTable(m.TableName()).Filter("MCHT_CD", m.MchtCd).Filter("TERM_ID", termID).Update(orm.Params{
+		"ACTIVE_FLG": m.ActiveFlg,
+		"REC_UPD_TS": m.RecUpdTs,
+	}); err != nil {
 		c.jsonResult(enums.JRCodeFailed, "编辑失败", 0)
 	} else {
 		c.jsonResult(enums.JRCodeSucc, "保存成功", m.MchtCd)

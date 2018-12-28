@@ -113,7 +113,7 @@
                     formatter: function (value, row, index) {
                         var ret = [];
                         if ('{{.canEdit}}' === 'true') {
-                            ret.push("<button class='btn btn-primary btn-xs'  onclick='EditFun(\"" + row.MchtCd + "\")'><i class='fa fa-pencil'></i> 编辑</button>");
+                            ret.push("<button class='btn btn-primary btn-xs'  onclick='EditFun(\"" + row.MchtCd + "-" + row.TermId + "\")'><i class='fa fa-pencil'></i> 编辑</button>");
                         }
                         return ret.join('');
                     }
