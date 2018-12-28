@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"sdrms/enums"
-	"sdrms/models"
-	"sdrms/utils"
+	"acsys/enums"
+	"acsys/models"
+	"acsys/utils"
 
 	"github.com/astaxie/beego/orm"
 )

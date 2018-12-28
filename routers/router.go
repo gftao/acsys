@@ -1,7 +1,7 @@
-package routers
+﻿package routers
 
 import (
-	"sdrms/controllers"
+	"acsys/controllers"
 
 	"github.com/astaxie/beego"
 )
@@ -52,11 +52,12 @@ func init() {
 	//激活码路由
 	beego.Router("/activationcode/index", &controllers.ActivationCodeController{}, "*:Index")
 	beego.Router("/activationcode/datagrid", &controllers.ActivationCodeController{}, "POST:DataGrid")
+	beego.Router("/activationcode/edit/?:id", &controllers.ActivationCodeController{}, "Get,Post:Edit")
 	//商户路由
 	beego.Router("/pcmchtinfos/index", &controllers.PcMchtInfosController{}, "*:Index")
 	beego.Router("/pcmchtinfos/datagrid", &controllers.PcMchtInfosController{}, "POST:DataGrid")
 	beego.Router("/pcmchtinfos/edit/?:MchtCd", &controllers.PcMchtInfosController{}, "Get,Post:Edit")
-	beego.Router("/pcmchtinfos/delete", &controllers.PcMchtInfosController{}, "Post:Delete")
+	//beego.Router("/pcmchtinfos/delete", &controllers.PcMchtInfosController{}, "Post:Delete")
 	beego.Router("/", &controllers.HomeController{}, "*:Index")
 
 }

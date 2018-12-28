@@ -3,8 +3,8 @@ package controllers
 import (
 	"encoding/json"
 
-	"sdrms/enums"
-	"sdrms/models"
+	"acsys/enums"
+	"acsys/models"
 
 	"fmt"
 	"strconv"

@@ -27,17 +27,6 @@
 						{{end}}
                         <!-- /.box-tools -->
                     </div>
-                    {{/*<!-- /.box-header -->*/}}
-                    {{/*<div class="box-body" style="display: none;">*/}}
-                        {{/*<input type="text" name="Mobile" class="form-control pull-left input-wd-md" placeholder="手机号">*/}}
-                        {{/*<select name="Status" class="form-control bs-select" data-width="100px">*/}}
-                            {{/*<option value="">- 全部 -</option>*/}}
-                            {{/*<option value="-1">锁定</option>*/}}
-                            {{/*<option value="0">禁用</option>*/}}
-                            {{/*<option value="1">启用</option>*/}}
-                        {{/*</select>*/}}
-                    {{/*</div>*/}}
-                    {{/*<!-- /.box-body -->*/}}
                 </div>
             </form>
             <!-- /.searchForm -->
@@ -45,7 +34,7 @@
                 <div class="box-body">
                     <div class="btn-group" id="toolbar">
                         {{ if .canEdit}}
-                        <button class="btn btn-info" href="javascript:;" onclick="EditFun(0)">
+                        <button class="btn btn-info" href="javascript:;" onclick="EditFun()">
                             <i class="fa fa-plus"></i> 添加</button>   
                         {{end}}  
                         {{ if .canDelete}}                

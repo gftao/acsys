@@ -61,7 +61,7 @@
         $.cookie('dataGrid.bs.table.pageNumber', 1, {expires: 1});
     }
 
-    var editable4Seq = rms.getEditableParam('{{urlfor "RoleController.UpdateSeq"}}', null, true);
+    //var editable4Seq = rms.getEditableParam('{{urlfor "RoleController.UpdateSeq"}}', null, true);
 
     //bootstrap table data init
     function dataGridInit() {
@@ -152,12 +152,9 @@
         return "";
     }
 
-    function EditFun(Id) {
-        var title = '添加角色';
-        if (Id > 0) {
-            title = "编辑角色"
-        }
-        var url = '{{ urlfor "RoleController.Edit"}}' + '/' + Id;
+    function EditFun( ) {
+        var title = '添加激活码';
+        var url = '{{ urlfor "ActivationCodeController.Edit"}}';
         layer.open({
             type: 2,
             title: title,

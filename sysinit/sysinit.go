@@ -1,7 +1,7 @@
 package sysinit
 
 import (
-	"sdrms/utils"
+	"acsys/utils"
 
 	"github.com/astaxie/beego"
 )

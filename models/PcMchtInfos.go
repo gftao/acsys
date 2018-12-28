@@ -1,4 +1,4 @@
-package models
+﻿package models
 
 import (
 	"time"
@@ -54,6 +54,9 @@ func PcMchtInfosOne(MchtCd string) (*PcMchtInfos, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(m.TermId) >= 4 {
+		m.TermId = m.TermId[4:]
+	}
 	return &m, nil
 }
 
@@ -72,9 +75,7 @@ func PcMchtInfosPageList(params *PcMchtInfosQueryParam) ([]*PcMchtInfos, int64) 
 	}
 	query = query.Filter("MCHT_CD__istartswith", params.MchtCdLike)
 	query = query.Filter("active_code__istartswith", params.ActiveCodeLike)
-	//if len(params.MchtCdLike) > 0 {
-	//	query = query.Filter("mobile", params.ActiveCodeLike)
-	//}
+
 	if len(params.SearchStatus) > 0 {
 		query = query.Filter("status", params.SearchStatus)
 	}
@@ -90,6 +91,9 @@ func PcMchtInfosPageList(params *PcMchtInfosQueryParam) ([]*PcMchtInfos, int64) 
 			data[i].ActiveFlg = "注销"
 		default:
 			data[i].ActiveFlg = "异常"
+		}
+		if len(data[i].TermId) >= 4 {
+			data[i].TermId = data[i].TermId[4:]
 		}
 	}
 	return data, total

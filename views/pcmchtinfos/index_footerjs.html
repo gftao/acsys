@@ -4,7 +4,7 @@
 <script src="/static/plugins/bootstrap-table/cookie/bootstrap-table-cookie.js"></script>
 <script>
     var $dataGrid = $('#dataGrid');
-    var $searchForm = $("#searchForm")
+    var $searchForm = $("#searchForm");
     //高亮显示id
     var highlightPk = 99;
     //初始化加载
@@ -38,7 +38,7 @@
         });
         //保持搜索条件面板状态
         sdtheme.searchPanelStatusInit('searchpanelbtn');
-    };
+    }
 
     //刷新当前页
     function refresh(pk) {
@@ -68,7 +68,6 @@
                 //params的自带参数类型由queryParamsType决定
                 params.MchtCdLike = $.trim($('.searchForm input[name="MhtCd"]').val());
                 params.ActiveCodeLike = $.trim($('.searchForm input[name="ActCd"]').val());
-                //params.Mobile = $.trim($('.searchForm input[name="Mobile"]').val());
                 params.SearchStatus = $('.searchForm select[name="Status"]').selectpicker('val');
                 return params;
             },
@@ -88,40 +87,37 @@
             rowAttributes: function (row, index) {
                 return {'data-pk': row.MchtCd}
             },
-            columns: [{
-                field: 'state',
-                checkbox: true,
-                radio: false,
-            }, {
-                field: 'MchtCd',
-                title: '商户号',
-                width: '90px',
-                align: 'center',
-                sortable: true,
-            }, {
-                field: 'TermId',
-                title: '终端号',
-            }, {
-                field: 'ActiveCode',
-                title: '激活码',
-            }, {
-                field: 'BrandKsn',
-                title: 'PC标识',
-            }, {
-                field: 'ActiveFlg',
-                title: '激活状态',
-            }, {
-                field: 'operate',
-                title: '操作',
-                width: '100px',
-                formatter: function (value, row, index) {
-                    var ret = [];
-                    if ('{{.canEdit}}' === 'true') {
-                        ret.push("<button class='btn btn-primary btn-xs'  onclick='EditFun(\"" + row.MchtCd + "\")'><i class='fa fa-pencil'></i> 编辑</button>");
+            columns: [
+                {
+                    field: 'MchtCd',
+                    title: '商户号',
+                    width: '90px',
+                    align: 'center',
+                    sortable: true,
+                }, {
+                    field: 'TermId',
+                    title: '终端号',
+                }, {
+                    field: 'ActiveCode',
+                    title: '激活码',
+                }, {
+                    field: 'BrandKsn',
+                    title: 'PC标识',
+                }, {
+                    field: 'ActiveFlg',
+                    title: '激活状态',
+                }, {
+                    field: 'operate',
+                    title: '操作',
+                    width: '100px',
+                    formatter: function (value, row, index) {
+                        var ret = [];
+                        if ('{{.canEdit}}' === 'true') {
+                            ret.push("<button class='btn btn-primary btn-xs'  onclick='EditFun(\"" + row.MchtCd + "\")'><i class='fa fa-pencil'></i> 编辑</button>");
+                        }
+                        return ret.join('');
                     }
-                    return ret.join('');
-                }
-            }],
+                }],
             onLoadSuccess: function (data) {
                 layer.closeAll('loading');
                 //
@@ -158,26 +154,11 @@
         });
     }
 
-    function GetStatusText(value) {
-        var texts = [{Text: '锁定', Value: -1}, {Text: '禁用', Value: 0}, {Text: '启用', Value: 1}]
-        return sdtheme.showenum(value, texts);
-    }
-
-    ///用一个带有title值的span将值包裹起来
-    function formatterWapBySpan(value, row, index) {
-        if (value !== null) {
-            return '<span title="' + value + '">' + value + '</span>';
-        }
-        return "";
-    }
-
     function EditFun(MchtCd) {
         var title = '添加商户';
-        // window.alert(MchtCd)
         if (MchtCd !== "") {
             title = '编辑商户'
         }
-
         var url = '{{ urlfor "PcMchtInfosController.Edit"}}' + '/' + MchtCd;
         layer.open({
             type: 2,
@@ -198,7 +179,7 @@
 
     function DeleteFun() {
         var url = '{{ urlfor "PcMchtInfosController.Delete"}}';
-        var rows = $dataGrid.bootstrapTable("getSelections")
+        var rows = $dataGrid.bootstrapTable("getSelections");
         if (rows.length === 0) {
             layer.alert('请选择想要删除的项', {icon: 0, title: '提示'});
             return;
@@ -210,10 +191,10 @@
         layer.confirm('您是否要删除所选的项？', {
             btn: ['是', '否'], icon: 3, title: '请确认'
         }, function () {
-            console.log(ids)
+            console.log(ids);
             var dataValues = {ids: ids.join(',')};
             $.sdpost(url, dataValues, function (re) {
-                if (re.code == 0) {
+                if (re.code === 0) {
                     layer.msg(re.msg, {icon: 1, title: '成功'});
                     refresh();
                 } else {
@@ -222,5 +203,4 @@
             });
         });
     }
-
 </script>

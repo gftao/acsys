@@ -1,13 +1,14 @@
 package controllers
 
 import (
-	"sdrms/models"
+	"acsys/models"
 	"github.com/astaxie/beego/orm"
-	"sdrms/enums"
+	"acsys/enums"
 	"strconv"
 	"strings"
 	"fmt"
 	"encoding/json"
+	"time"
 )
 
 type PcMchtInfosController struct {
@@ -36,14 +37,14 @@ func (c *PcMchtInfosController) Index() {
 	c.LayoutSections["footerjs"] = "pcmchtinfos/index_footerjs.html"
 	//页面里按钮权限控制
 	c.Data["canEdit"] = c.checkActionAuthor("PcMchtInfosController", "Edit")
-	c.Data["canDelete"] = c.checkActionAuthor("PcMchtInfosController", "Delete")
+	c.Data["canDelete"] = false // c.checkActionAuthor("PcMchtInfosController", "Delete")
 }
 func (c *PcMchtInfosController) DataGrid() {
 	//直接反序化获取json格式的requestbody里的值（要求配置文件里 copyrequestbody=true）
 	var params models.PcMchtInfosQueryParam
 	json.Unmarshal(c.Ctx.Input.RequestBody, &params)
 	//获取数据列表和总数
-	fmt.Println(params)
+	fmt.Println("--[DataGrid]-->", params)
 	data, total := models.PcMchtInfosPageList(&params)
 	//定义返回的数据结构
 	result := make(map[string]interface{})
@@ -58,7 +59,6 @@ func (c *PcMchtInfosController) Edit() {
 		c.Save()
 	}
 	MchtCd := c.GetString(":MchtCd", "")
-	fmt.Println("----->", c.Ctx.Request.Method, MchtCd)
 	m := &models.PcMchtInfos{}
 	var err error
 	if MchtCd != "" {
@@ -78,11 +78,11 @@ func (c *PcMchtInfosController) Save() {
 	var err error
 	//获取form里的值
 	if err = c.ParseForm(&m); err != nil {
-		c.jsonResult(enums.JRCodeFailed, "获取数据失败", m.MchtCd)
+		c.jsonResult(enums.JRCodeFailed, "获取数据失败", 0)
 	}
-
-	if _, err := o.Update(&m); err != nil {
-		c.jsonResult(enums.JRCodeFailed, "编辑失败", m.MchtCd)
+	m.RecUpdTs = time.Now()
+	if _, err := o.Update(&m, "ACTIVE_FLG", "REC_UPD_TS"); err != nil {
+		c.jsonResult(enums.JRCodeFailed, "编辑失败", 0)
 	} else {
 		c.jsonResult(enums.JRCodeSucc, "保存成功", m.MchtCd)
 	}

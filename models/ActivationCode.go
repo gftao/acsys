@@ -1,4 +1,4 @@
-package models
+﻿package models
 
 import (
 	"time"
@@ -12,25 +12,29 @@ type ActivationCode struct {
 	ACTIVE_FLG  string    `orm:"column(active_flg)"`
 	RecUpdTs    time.Time `orm:"column(REC_UPD_TS)"`
 	RecCrtTs    time.Time `orm:"column(REC_CRT_TS)"`
-	//ACTFLG      string      `orm:"-"`
-}
+ }
 
 func (a *ActivationCode) TableName() string {
 	return ActivationCodeTBName()
 }
 
+// RoleQueryParam 用于搜索的类
+type ActivationCodeQueryParam struct {
+	BaseQueryParam
+	NameLike       string
+	ActivationCode string //为空不查询，有值精确查询
+	Activation     string //为空不查询，有值精确查询
+	Name           string
+	Seq            int
+}
+
 // RolePageList 获取分页数据
-func ActivationCodeList(params *RoleQueryParam) ([]*ActivationCode, int64) {
+func ActivationCodeList(params *ActivationCodeQueryParam) ([]*ActivationCode, int64) {
 	query := orm.NewOrm().QueryTable(ActivationCodeTBName())
 	data := make([]*ActivationCode, 0)
 	//默认排序
 	sortorder := "active_code"
-	//switch params.Sort {
-	//case "Id":
-	//	sortorder = "Id"
-	//case "Seq":
-	//	sortorder = "Seq"
-	//}
+
 	if params.Order == "desc" {
 		sortorder = "-" + sortorder
 	}
@@ -39,21 +43,14 @@ func ActivationCodeList(params *RoleQueryParam) ([]*ActivationCode, int64) {
 	//	query = query.Filter("active_code", params.ActivationCode)
 	//}
 	if len(params.Activation) > 0 {
-		if strings.ContainsAny(params.Activation,"未"){
-			query = query.Filter("active_flg", "0")
-		}else {
+		if strings.ContainsAny(params.Activation, "是") {
 			query = query.Filter("active_flg", "1")
+		} else {
+			query = query.Filter("active_flg", "0")
 		}
 	}
 	total, _ := query.Count()
 	query.OrderBy(sortorder).Limit(params.Limit, params.Offset).All(&data)
-	//for i, _ := range data {
-	//	switch data[i].ACTIVE_FLG {
-	//	case "0":
-	//		data[i].ACTFLG = "未使用"
-	//	default:
-	//		data[i].ACTFLG = "已使用"
-	//	}
-	//}
+
 	return data, total
 }

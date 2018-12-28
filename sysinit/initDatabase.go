@@ -1,7 +1,7 @@
 package sysinit
 
 import (
-	_ "sdrms/models"
+	_ "acsys/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"

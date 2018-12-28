@@ -3,9 +3,9 @@ package controllers
 import (
 	"strings"
 
-	"sdrms/enums"
-	"sdrms/models"
-	"sdrms/utils"
+	"acsys/enums"
+	"acsys/models"
+	"acsys/utils"
 )
 
 type HomeController struct {

@@ -1,9 +1,12 @@
 package controllers
 
 import (
-	"sdrms/models"
+	"acsys/models"
+	"acsys/enums"
 	"encoding/json"
-	"fmt"
+	"github.com/astaxie/beego/orm"
+	"time"
+	"acsys/utils"
 )
 
 type ActivationCodeController struct {
@@ -24,16 +27,15 @@ func (c *ActivationCodeController) Index() {
 	c.LayoutSections["headcssjs"] = "activationcode/index_headcssjs.html"
 	c.LayoutSections["footerjs"] = "activationcode/index_footerjs.html"
 	//页面里按钮权限控制
-	//c.Data["canEdit"] = c.checkActionAuthor("RoleController", "Edit")
+	c.Data["canEdit"] = c.checkActionAuthor("ActivationCodeController", "Edit")
 	//c.Data["canDelete"] = c.checkActionAuthor("RoleController", "Delete")
-	//c.Data["canAllocate"] = c.checkActionAuthor("RoleController", "Allocate")
 }
 func (c *ActivationCodeController) DataGrid() {
 	//直接反序化获取json格式的requestbody里的值
-	var params models.RoleQueryParam
+	var params models.ActivationCodeQueryParam
 	json.Unmarshal(c.Ctx.Input.RequestBody, &params)
 	//获取数据列表和总数
-	fmt.Printf("->>>>%#v", params)
+	//fmt.Printf("===%#v", params)
 	data, total := models.ActivationCodeList(&params)
 	//定义返回的数据结构
 	result := make(map[string]interface{})
@@ -41,4 +43,40 @@ func (c *ActivationCodeController) DataGrid() {
 	result["rows"] = data
 	c.Data["json"] = result
 	c.ServeJSON()
+}
+func (c *ActivationCodeController) Edit() {
+	//如果是Post请求，则由Save处理
+	//fmt.Println("--Edit-->", c.Ctx.Request.Method)
+	if c.Ctx.Request.Method == "POST" {
+		c.Save()
+	}
+	c.setTpl("activationcode/edit.html", "shared/layout_pullbox.html")
+	c.LayoutSections = make(map[string]string)
+	c.LayoutSections["footerjs"] = "activationcode/edit_footerjs.html"
+}
+
+//Save 添加、编辑页面 保存
+func (c *ActivationCodeController) Save() {
+	var err error
+
+	//获取form里的值
+	var params models.ActivationCodeQueryParam
+	if err := c.ParseForm(&params); err != nil {
+		c.jsonResult(enums.JRCodeFailed, "获取数据失败", nil)
+	}
+	o := orm.NewOrm()
+	if params.Seq == 0 {
+		params.Seq = 10
+	}
+	for i := 0; i < params.Seq; i++ {
+		m := models.ActivationCode{ACTIVE_FLG: "0"}
+		m.ACTIVE_CODE = params.Name + utils.RandomString(6)
+		m.RecCrtTs = time.Now()
+		m.RecUpdTs = m.RecCrtTs
+		if _, err = o.Insert(&m); err != nil {
+			i--
+		}
+	}
+
+	c.jsonResult(enums.JRCodeSucc, "添加成功", nil)
 }
