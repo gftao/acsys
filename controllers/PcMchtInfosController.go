@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"encoding/json"
 	"time"
+	"acsys/utils"
 )
 
 type PcMchtInfosController struct {
@@ -59,7 +60,8 @@ func (c *PcMchtInfosController) Edit() {
 		c.Save()
 	}
 	MchtCd := c.GetString(":MchtCd", "")
-	fmt.Println("--[MchtCd]-->", MchtCd)
+	//utils.LogDebugf("--[MchtCd]--=%s", MchtCd)
+	utils.LogDebug(MchtCd)
 	m := &models.PcMchtInfos{}
 	var err error
 	if MchtCd != "" {
@@ -81,7 +83,6 @@ func (c *PcMchtInfosController) Save() {
 	if err = c.ParseForm(&m); err != nil {
 		c.jsonResult(enums.JRCodeFailed, "获取数据失败", 0)
 	}
-	fmt.Printf("[[[PcMchtInfos]]]=%+v", m)
 	termID := m.MchtCd[len(m.MchtCd)-4:] + m.TermId
 	m.RecUpdTs = time.Now()
 	if _, err := o.QueryTable(m.TableName()).Filter("MCHT_CD", m.MchtCd).Filter("TERM_ID", termID).Update(orm.Params{

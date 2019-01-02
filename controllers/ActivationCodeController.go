@@ -35,7 +35,7 @@ func (c *ActivationCodeController) DataGrid() {
 	var params models.ActivationCodeQueryParam
 	json.Unmarshal(c.Ctx.Input.RequestBody, &params)
 	//获取数据列表和总数
-	//fmt.Printf("===%#v", params)
+	utils.LogDebugf("%#v", params)
 	data, total := models.ActivationCodeList(&params)
 	//定义返回的数据结构
 	result := make(map[string]interface{})

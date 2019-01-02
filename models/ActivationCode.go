@@ -12,7 +12,7 @@ type ActivationCode struct {
 	ACTIVE_FLG  string    `orm:"column(active_flg)"`
 	RecUpdTs    time.Time `orm:"column(REC_UPD_TS)"`
 	RecCrtTs    time.Time `orm:"column(REC_CRT_TS)"`
- }
+}
 
 func (a *ActivationCode) TableName() string {
 	return ActivationCodeTBName()
@@ -33,15 +33,12 @@ func ActivationCodeList(params *ActivationCodeQueryParam) ([]*ActivationCode, in
 	query := orm.NewOrm().QueryTable(ActivationCodeTBName())
 	data := make([]*ActivationCode, 0)
 	//默认排序
-	sortorder := "active_code"
-
+	sortorder := params.Sort
 	if params.Order == "desc" {
 		sortorder = "-" + sortorder
 	}
 	query = query.Filter("active_code__istartswith", params.ActivationCode)
-	//if len(params.ActivationCode) > 0 {
-	//	query = query.Filter("active_code", params.ActivationCode)
-	//}
+
 	if len(params.Activation) > 0 {
 		if strings.ContainsAny(params.Activation, "是") {
 			query = query.Filter("active_flg", "1")

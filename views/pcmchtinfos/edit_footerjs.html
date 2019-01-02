@@ -4,7 +4,7 @@
 <!-- 针对当前主题进行简单封装，精简代码 -->
 <script src="/static/sdtheme/scripts/sdvalidate.js"></script>
 <script>
-    const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+    //const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
     $(function () {
         pageInit();
     });
@@ -15,7 +15,6 @@
         validateInfo();
     }
 
-    //表单验证及AJAX提交
     function validateInfo() {
         var $thisForm = $('#thisForm');
         $thisForm.sdvalidate({
@@ -25,8 +24,9 @@
                 $.sdpost(url, data, function (re) {
                     if (re.code === 0) {
                         parent.layer.msg(re.msg);
+                        //parent.refresh(re.obj);
+                        parent.location.reload();
                         parent.layer.close(index);
-                        parent.refresh(re.obj,true)
                     } else {
                         parent.layer.alert(re.msg, {icon: 2, title: '失败'})
                     }
@@ -35,6 +35,7 @@
             }
         });
     }
+
     function FormSubmit() {
         $("#thisForm").submit();
     }
