@@ -76,8 +76,8 @@ func (c *UserCenterController) PasswordSave() {
 	if newPwd != confirmPwd {
 		c.jsonResult(enums.JRCodeFailed, "两次输入的新密码不一致", "")
 	}
-	oM.UserPwd = md5str
-	o := orm.NewOrm()
+ 	oM.UserPwd = utils.String2md5(newPwd)
+ 	o := orm.NewOrm()
 	if _, err := o.Update(oM); err != nil {
 		c.jsonResult(enums.JRCodeFailed, "保存失败", oM.Id)
 	} else {
