@@ -4,6 +4,7 @@ import (
 	"time"
 	"github.com/astaxie/beego/orm"
 	"strings"
+	"fmt"
 )
 
 // Role 用户角色 实体类
@@ -12,6 +13,8 @@ type ActivationCode struct {
 	ACTIVE_FLG  string    `orm:"column(active_flg)"`
 	RecUpdTs    time.Time `orm:"column(REC_UPD_TS)"`
 	RecCrtTs    time.Time `orm:"column(REC_CRT_TS)"`
+	RecUpd      string    `orm:"-"`
+	RecCrt      string    `orm:"-"`
 }
 
 func (a *ActivationCode) TableName() string {
@@ -34,6 +37,10 @@ func ActivationCodeList(params *ActivationCodeQueryParam) ([]*ActivationCode, in
 	data := make([]*ActivationCode, 0)
 	//默认排序
 	sortorder := params.Sort
+	if params.Sort == "RecCrt" {
+		sortorder = "REC_CRT_TS"
+	}
+	fmt.Println("->", params.Sort)
 	if params.Order == "desc" {
 		sortorder = "-" + sortorder
 	}
@@ -48,6 +55,9 @@ func ActivationCodeList(params *ActivationCodeQueryParam) ([]*ActivationCode, in
 	}
 	total, _ := query.Count()
 	query.OrderBy(sortorder).Limit(params.Limit, params.Offset).All(&data)
-
+	for i, _ := range data {
+		data[i].RecUpd = data[i].RecUpdTs.Format("2006-01-02 15:04:05")
+		data[i].RecCrt = data[i].RecCrtTs.Format("2006-01-02 15:04:05")
+	}
 	return data, total
 }
