@@ -4,7 +4,6 @@ import (
 	"time"
 	"github.com/astaxie/beego/orm"
 	"strings"
-	"fmt"
 )
 
 // Role 用户角色 实体类
@@ -40,7 +39,6 @@ func ActivationCodeList(params *ActivationCodeQueryParam) ([]*ActivationCode, in
 	if params.Sort == "RecCrt" {
 		sortorder = "REC_CRT_TS"
 	}
-	fmt.Println("->", params.Sort)
 	if params.Order == "desc" {
 		sortorder = "-" + sortorder
 	}

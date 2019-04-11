@@ -121,9 +121,8 @@ func (c *BaseController) setBackendUser2Session(userId int) error {
 	resourceList := models.ResourceTreeGridByUserId(userId, 1000)
 	for _, item := range resourceList {
 		m.ResourceUrlForList = append(m.ResourceUrlForList, strings.TrimSpace(item.UrlFor))
-		log.Printf("UrlForList=%+v", m.ResourceUrlForList)
 	}
-
+	log.Printf("UrlForList=%+v", m.ResourceUrlForList)
 	c.SetSession("backenduser", *m)
 	return nil
 }

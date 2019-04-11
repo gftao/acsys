@@ -1,0 +1,87 @@
+<!-- 验证插件 -->
+<script src="/static/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="/static/plugins/jquery-validation/localization/messages_zh.min.js"></script>
+<!-- 针对当前主题进行简单封装，精简代码 -->
+<script src="/static/sdtheme/scripts/sdvalidate.js"></script>
+<!-- 文件上传插件 -->
+{{/*<script src="/static/plugins/ajaxfileupload.js"></script>*/}}
+<!-- 图片上传插件 -->
+{{/*<script src="/static/plugins/bootstrap-fileinput-jasny/bootstrap-fileinput.js"></script>*/}}
+<link rel="stylesheet" href="/static/plugins/layui-v2.4.5/layui/css/layui.css" media="all">
+<script src="/static/plugins/layui-v2.4.5/layui/layui.js" charset="utf-8"></script>
+<script>
+    //const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+    $(function () {
+        pageInit();
+    });
+
+    function pageInit() {
+        $("#AssignLevel").selectpicker('val', '{{.m.Assign_level}}');
+        //验证
+        validateInfo();
+
+    }
+
+    function validateInfo() {
+        var $thisForm = $('#thisForm');
+        $thisForm.sdvalidate({
+            submitHandler: function (form) {
+                var url = '{{ urlfor "VersionController.Edit"}}';
+                var data = $thisForm.serialize();
+                $.sdpost(url, data, function (re) {
+                    if (re.code === 0) {
+                        parent.layer.msg(re.msg);
+                        parent.refresh(re.obj);
+                        parent.location.reload();
+                        parent.layer.close(index);
+                    } else {
+                        parent.layer.alert(re.msg, {icon: 2, title: '失败'})
+                    }
+                });
+                return false;
+            }
+        });
+    }
+
+    layui.use('upload', function () {
+        var $ = layui.jquery
+                , upload = layui.upload;
+
+
+        upload.render({
+            elem: '#test3'
+            , url: '{{ urlfor "VersionController.UploadImage"}}'
+            , secureuri: false
+            , accept: 'file'
+            , auto: true
+            , data: {
+                type: $('#test3').serialize(),
+            }
+            , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                console.log(obj)
+                layer.load(); //上传loading
+            }
+            , done: function (res) {
+                console.log(res)
+                layer.closeAll('loading'); //关闭loading
+            },
+        });
+
+        upload.render({ //允许上传的文件后缀
+            elem: '#test4'
+            , url: '{{ urlfor "VersionController.UploadImage"}}'
+            , accept: 'file' //普通文件
+            , exts: 'zip|rar|7z' //只允许上传压缩文件
+            , done: function (res) {
+                console.log(res)
+            }
+        });
+    });
+
+
+    function FormSubmit() {
+        $("#thisForm").submit();
+    }
+
+
+</script>

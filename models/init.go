@@ -7,7 +7,7 @@ import (
 
 // init 初始化
 func init() {
-	orm.RegisterModel(new(ActivationCode), new(PcMchtInfos), new(BackendUser), new(Resource), new(Role), new(RoleResourceRel), new(RoleBackendUserRel))
+	orm.RegisterModel(new(ActivationCode),new(Pc_source_infos),new(PcSourceAssignInfos), new(PcMchtInfos), new(BackendUser), new(Resource), new(Role), new(RoleResourceRel), new(RoleBackendUserRel))
 }
 
 // TableName 下面是统一的表名管理
@@ -49,4 +49,12 @@ func RoleResourceRelTBName() string {
 // RoleBackendUserRelTBName 角色与用户多对多关系表
 func RoleBackendUserRelTBName() string {
 	return TableName("role_backenduser_rel")
+}
+
+// 终端资源表
+func PcSourceAssignInfosTBName() string {
+	return TableName("pc_source_assign_infos")
+}
+func Pc_source_infosTBName() string {
+	return TableName("pc_source_infos")
 }

@@ -1,0 +1,35 @@
+<form id="thisForm">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>下发级别</label>
+                <select name="AssignLevel" id="AssignLevel" readonly="readonly" class="form-control bs-select">
+                    <option value=1>全量</option>
+                    <option value=2>商户</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>商户号</label>
+                <input type="text" name="AssignKey" class="form-control" readonly="readonly" placeholder="长度不超过24"
+                       value="{{.m.AssignKey}}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>当前版本号,更新修改为最新版本号</label>
+                <input type="text" name="AppSourceVersion" class="form-control" placeholder=""
+                       value="{{.m.AppSourceVersion}}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div>
+                <br>
+                <button type="button" name="fileImageUrl" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
