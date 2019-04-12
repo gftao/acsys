@@ -93,11 +93,11 @@ func (c *VersionController) UploadImage() {
 	}
 	defer f.Close()
 	filePath := c.basePath + h.Filename
-	c.SetSession(c.curUser.Id, h.Filename)
+	c.SetSession(utils.ClientIP(c.Ctx.Request), h.Filename)
 
 	utils.LogDebugf("filePath = [%s]\n", filePath)
-	log.Printf("Id = %d,fileName=%s\n", c.curUser.Id, (c.GetSession(c.curUser.Id)).(string))
-	// 保存位置在 static/upload, 没有文件夹要先创建
+	log.Printf("Id = %s,fileName=%s\n", utils.ClientIP(c.Ctx.Request), (c.GetSession(utils.ClientIP(c.Ctx.Request))).(string))
+
 	err = c.SaveToFile("file", filePath)
 	if err != nil {
 		c.jsonResult(enums.JRCodeFailed, "上传失败", "")
@@ -117,7 +117,7 @@ func (c *VersionController) Save() {
 	log.Printf("[%+v]", m)
 	m.Assign_level, _ = strconv.Atoi(m.AssignLevel)
 	m.App_source_type = m.SourceType
-	fileName := (c.GetSession(c.curUser.Id)).(string)
+	fileName := (c.GetSession(utils.ClientIP(c.Ctx.Request))).(string)
 
 	//err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_level", m.AssignLevel).Filter("assign_key", m.AssignKey).One(&m)
 	err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_key", m.AssignKey).One(&mdb)
