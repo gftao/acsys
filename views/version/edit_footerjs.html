@@ -17,9 +17,9 @@
 
     function pageInit() {
         $("#AssignLevel").selectpicker('val', '{{.m.Assign_level}}');
+        $("#SourceType").selectpicker('val', '{{.m.App_source_type}}');
         //验证
         validateInfo();
-
     }
 
     function validateInfo() {
@@ -46,7 +46,6 @@
     layui.use('upload', function () {
         var $ = layui.jquery
                 , upload = layui.upload;
-
 
         upload.render({
             elem: '#test3'
@@ -82,6 +81,5 @@
     function FormSubmit() {
         $("#thisForm").submit();
     }
-
 
 </script>

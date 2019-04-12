@@ -11,6 +11,7 @@ type PcSourceAssignInfos struct {
 	Assign_level     int       `orm:"column(assign_level)"`
 	AssignLevel      string    `orm:"-"`
 	AssignKey        string    `orm:"column(assign_key);pk"`
+	SourceType       string    `orm:"-"`
 	App_source_type  string    `orm:"column(app_source_type)"`
 	App_source_list  string    `orm:"column(app_source_list)"  json:"-"`
 	Rec_upd_ts       time.Time `orm:"column(rec_upd_ts);auto_now_add;type(datetime)" json:"-"`
@@ -123,7 +124,7 @@ func PcSourceAssignInfosOne(id string) (*PcSourceAssignInfos, error) {
 	if err != nil {
 		return nil, err
 	}
-	//log.Printf("source=[%+v]\n", *source)
+	log.Printf("source=[%+v]\n", m)
 	m.AppSourceVersion = source.App_source_version_code
 	return &m, nil
 }

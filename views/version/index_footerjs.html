@@ -165,7 +165,7 @@
 
     function EditFun(Id) {
         var title = '添加终端';
-        if (Id > 0) {
+        if (Id.length > 2) {
             title = "编辑终端"
         }
         var url = '{{ urlfor "VersionController.Edit"}}' + '/' + Id;

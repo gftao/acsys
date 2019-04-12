@@ -67,7 +67,6 @@ func init() {
 	beego.Router(bp("/version/index"), &controllers.VersionController{}, "*:Index")
 	beego.Router(bp("/version/datagrid"), &controllers.VersionController{}, "POST:DataGrid")
 	beego.Router(bp("/version/edit/?:Id"), &controllers.VersionController{}, "Get,Post:Edit")
-
 	beego.Router(bp("/version/uploadimage"), &controllers.VersionController{}, "Post:UploadImage")
 
 }
