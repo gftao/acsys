@@ -126,11 +126,12 @@ func (c *VersionController) Save() {
 	err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_key", m.AssignKey).One(&mdb)
 	log.Printf("[%+v]", mdb, err)
 	if err == orm.ErrNoRows {
-		mdb.App_source_list = m.AssignKey[len(m.AssignKey)-8:]
+		m.App_source_list = m.AssignKey[len(m.AssignKey)-8:]
+		v, _ := strconv.Atoi(m.App_source_list)
 		_, err = o.Insert(&m)
 		log.Printf("[%+v]", err)
 		if err == nil {
-			v, _ := strconv.Atoi(mdb.App_source_list)
+
 			bs := c.urlPath + base64.StdEncoding.EncodeToString([]byte(fileName))
 			pc := models.Pc_source_infos{
 				App_id:                  v,
