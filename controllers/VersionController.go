@@ -117,7 +117,10 @@ func (c *VersionController) Save() {
 	log.Printf("[%+v]", m)
 	m.Assign_level, _ = strconv.Atoi(m.AssignLevel)
 	m.App_source_type = m.SourceType
-	fileName := (c.GetSession(utils.ClientIP(c.Ctx.Request))).(string)
+	fileName, ok := (c.GetSession(utils.ClientIP(c.Ctx.Request))).(string)
+	if !ok {
+		fileName = ""
+	}
 
 	//err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_level", m.AssignLevel).Filter("assign_key", m.AssignKey).One(&m)
 	err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_key", m.AssignKey).One(&mdb)
