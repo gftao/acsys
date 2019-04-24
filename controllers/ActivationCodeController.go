@@ -19,7 +19,7 @@ func (c *ActivationCodeController) Prepare() {
 }
 func (c *ActivationCodeController) Index() {
 	//是否显示更多查询条件的按钮
-	c.Data["showMoreQuery"] = false
+	c.Data["showMoreQuery"] = true
 	//将页面左边菜单的某项激活
 	c.Data["activeSidebarUrl"] = c.URLFor(c.controllerName + "." + c.actionName)
 	c.setTpl()
@@ -35,6 +35,7 @@ func (c *ActivationCodeController) DataGrid() {
 	var params models.ActivationCodeQueryParam
 	json.Unmarshal(c.Ctx.Input.RequestBody, &params)
 	//获取数据列表和总数
+	//utils.LogDebugf("%s", string(c.Ctx.Input.RequestBody))
 	utils.LogDebugf("%#v", params)
 	data, total := models.ActivationCodeList(&params)
 	//定义返回的数据结构
@@ -57,7 +58,6 @@ func (c *ActivationCodeController) Edit() {
 
 //Save 添加、编辑页面 保存
 func (c *ActivationCodeController) Save() {
-	var err error
 
 	//获取form里的值
 	var params models.ActivationCodeQueryParam
@@ -73,10 +73,17 @@ func (c *ActivationCodeController) Save() {
 		m.ACTIVE_CODE = params.Name + utils.RandomString(6)
 		m.RecCrtTs = time.Now()
 		m.RecUpdTs = m.RecCrtTs
+		b := models.Tbl_pc_belonged{}
+		err := o.QueryTable(b.TableName()).Filter("name_ids", params.Name).One(&b)
+		if err != nil {
+			utils.LogDebugf("获取地区码失败:%s", err)
+			//return nil, err
+		}
+		m.Active_belong = b.Real_name
 		if _, err = o.Insert(&m); err != nil {
 			i--
 		}
 	}
-
+	o.Commit()
 	c.jsonResult(enums.JRCodeSucc, "添加成功", nil)
 }

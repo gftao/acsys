@@ -7,7 +7,7 @@ import (
 
 // init 初始化
 func init() {
-	orm.RegisterModel(new(ActivationCode),new(Pc_source_infos),new(PcSourceAssignInfos), new(PcMchtInfos), new(BackendUser), new(Resource), new(Role), new(RoleResourceRel), new(RoleBackendUserRel))
+	orm.RegisterModel(new(ActivationCode),new(Tbl_pc_belonged), new(Pc_source_infos), new(PcSourceAssignInfos), new(PcMchtInfos), new(BackendUser), new(Resource), new(Role), new(RoleResourceRel), new(RoleBackendUserRel))
 }
 
 // TableName 下面是统一的表名管理
@@ -19,6 +19,10 @@ func TableName(name string) string {
 // BackendUserTBName 获取 BackendUser 对应的表名称
 func ActivationCodeTBName() string {
 	return TableName("pc_active_infos")
+}
+
+func PcBelongedTBName() string {
+	return TableName("pc_belonged")
 }
 
 // PcMchtInfosTBName 获取 pc_mcht_infos 对应的表名称

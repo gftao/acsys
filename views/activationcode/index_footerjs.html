@@ -75,6 +75,7 @@
                 //params的自带参数类型由queryParamsType决定
                 params.Activation = $.trim($('.searchForm input[name="Activation"]').val());
                 params.ActivationCode = $.trim($('.searchForm input[name="ActivationCode"]').val());
+                params.BelongName = $.trim($('.searchForm input[name="BelongName"]').val());
                 return params;
             },
             pagination: true,
@@ -98,6 +99,12 @@
                 title: '激活码',
                 formatter: formatterWapBySpan,
                 align: 'center',
+                sortable: true,
+            }, {
+                field: 'Active_belong',
+                title: '归属地区',
+                align: 'center',
+                formatter: formatterWapBySpan,
                 sortable: true,
             }, {
                 field: 'RecCrt',
