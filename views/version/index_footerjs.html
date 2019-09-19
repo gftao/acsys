@@ -109,7 +109,9 @@
                 formatter: function (value, row, index) {
                     var ret = [];
                     if ('{{.canEdit}}' === 'true') {
-                        ret.push("<button class='btn btn-primary btn-xs'  onclick='EditFun(\"" + row.AssignLevel + "-" + row.AssignKey + "\")'><i class='fa fa-pencil'></i> 编辑</button>");
+                        ret.push("<button class='btn btn-primary btn-xs'  onclick='EditFun(\"" + row.AssignLevel + "-" + row.AssignKey + "-" + row.App_source_type + "\")'><i class='fa fa-pencil'></i> 编辑</button>"
+                        )
+                        ;
                     }
                     return ret.join('');
                 }

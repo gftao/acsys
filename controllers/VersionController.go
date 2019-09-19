@@ -6,10 +6,13 @@ import (
 	"acsys/utils"
 	"encoding/json"
 	"acsys/models"
-	"github.com/go-xweb/log"
 	"github.com/astaxie/beego/orm"
 	"encoding/base64"
 	"strconv"
+	"fmt"
+	"math/rand"
+	"time"
+	"strings"
 )
 
 type VersionController struct {
@@ -69,7 +72,7 @@ func (c *VersionController) Edit() {
 	Id := c.GetString(":Id", "")
 	m := &models.PcSourceAssignInfos{}
 
-	log.Infof("Id=[%s]", Id)
+	utils.LogDebugf("Id=[%s]", Id)
 	if len(Id) > 1 {
 		m, err = models.PcSourceAssignInfosOne(Id)
 		if err != nil {
@@ -85,8 +88,6 @@ func (c *VersionController) Edit() {
 	c.LayoutSections["footerjs"] = "version/edit_footerjs.html"
 }
 func (c *VersionController) UploadImage() {
-	//这里type没有用，只是为了演示传值
-	//stype, _ := c.GetInt32("type", 0)
 	f, h, err := c.GetFile("file")
 	if err != nil {
 		c.jsonResult(enums.JRCodeFailed, "上传失败", "")
@@ -96,7 +97,7 @@ func (c *VersionController) UploadImage() {
 	c.SetSession(utils.ClientIP(c.Ctx.Request), h.Filename)
 
 	utils.LogDebugf("filePath = [%s]\n", filePath)
-	log.Printf("Id = %s,fileName=%s\n", utils.ClientIP(c.Ctx.Request), (c.GetSession(utils.ClientIP(c.Ctx.Request))).(string))
+	//log.Printf("Id = %s,fileName=%s\n", utils.ClientIP(c.Ctx.Request), (c.GetSession(utils.ClientIP(c.Ctx.Request))).(string))
 
 	err = c.SaveToFile("file", filePath)
 	if err != nil {
@@ -114,7 +115,7 @@ func (c *VersionController) Save() {
 	if err = c.ParseForm(&m); err != nil {
 		c.jsonResult(enums.JRCodeFailed, "获取数据失败", 0)
 	}
-	log.Printf("[%+v]", m)
+	utils.LogDebugf("PcSourceAssignInfos->[%+v]", m)
 	m.Assign_level, _ = strconv.Atoi(m.AssignLevel)
 	m.App_source_type = m.SourceType
 	fileName, ok := (c.GetSession(utils.ClientIP(c.Ctx.Request))).(string)
@@ -122,19 +123,23 @@ func (c *VersionController) Save() {
 		fileName = ""
 	}
 
-	//err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_level", m.AssignLevel).Filter("assign_key", m.AssignKey).One(&m)
-	err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_key", m.AssignKey).One(&mdb)
-	log.Printf("[%+v]", mdb, err)
+	err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_key", m.AssignKey).Filter("app_source_type", m.SourceType).One(&mdb)
+	utils.LogDebugf("AssignInfos=[%+v]", err)
 	if err == orm.ErrNoRows {
-		m.App_source_list = m.AssignKey[len(m.AssignKey)-8:]
-		v, _ := strconv.Atoi(m.App_source_list)
+		//utils.LogDebugf("------[%+v]", m)
+		if strings.TrimSpace(m.AssignKey) == "G" {
+			rand.Seed(time.Now().UnixNano())
+			m.App_source_list = fmt.Sprintf("G%d", rand.Int()/10000000)
+			//utils.LogDebugf("--- [%+v]", m)
+		}else {
+			m.App_source_list = m.AssignKey
+		}
 		_, err = o.Insert(&m)
-		log.Printf("[%+v]", err)
+		utils.LogDebugf("[%+v]", err)
 		if err == nil {
-
 			bs := c.urlPath + base64.StdEncoding.EncodeToString([]byte(fileName))
 			pc := models.Pc_source_infos{
-				App_id:                  v,
+				App_id:                  m.App_source_list,
 				App_source_type:         m.SourceType,
 				App_source_version_code: m.AppSourceVersion,
 				App_source_url:          bs,
@@ -142,10 +147,9 @@ func (c *VersionController) Save() {
 			_, err = o.InsertOrUpdate(&pc)
 		}
 
-		log.Printf("[%+v]", err)
-	} else if err == nil {
+ 	} else if err == nil {
 		if m.Assign_level != mdb.Assign_level || m.SourceType != mdb.App_source_type {
-			_, err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_key", m.AssignKey).Update(orm.Params{
+			_, err = o.QueryTable(models.PcSourceAssignInfosTBName()).Filter("assign_key", m.AssignKey).Filter("app_source_type", m.SourceType).Update(orm.Params{
 				"assign_level":    m.Assign_level,
 				"app_source_type": m.SourceType,
 			})
@@ -161,12 +165,13 @@ func (c *VersionController) Save() {
 				"app_source_url":          bs,
 			})
 		} else {
+			utils.LogDebugf("-- else if --"  )
 			_, err = o.QueryTable(models.Pc_source_infosTBName()).Filter("app_id", mdb.App_source_list).Update(orm.Params{
 				"app_source_version_code": m.AppSourceVersion,
 			})
 		}
 	}
-	log.Printf("c.fileName[%+v]", fileName)
+	//utils.LogDebugf("c.fileName[%+v]", fileName)
 
 	if err != nil {
 		c.jsonResult(enums.JRCodeFailed, "编辑失败", 0)

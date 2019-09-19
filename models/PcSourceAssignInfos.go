@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"log"
 	"strings"
+	"acsys/utils"
 )
 
 type PcSourceAssignInfos struct {
@@ -33,7 +34,7 @@ func (p *PcSourceAssignInfos) TableName() string {
 }
 
 type Pc_source_infos struct {
-	App_id                  int       `orm:"column(app_id);pk"`
+	App_id                  string    `orm:"column(app_id);pk"`
 	App_source_type         string    `orm:"column(app_source_type)"`
 	App_source_code         string    `orm:"column(app_source_code)"`
 	App_source_url          string    `orm:"column(app_source_url)"`
@@ -113,8 +114,9 @@ func PcSourceAssignInfosOne(id string) (*PcSourceAssignInfos, error) {
 		l = 2
 	}
 	k := args[1]
+	st := args[2]
 	m := PcSourceAssignInfos{}
-	err := o.QueryTable(m.TableName()).Filter("assign_level", l).Filter("assign_key", k).One(&m)
+	err := o.QueryTable(m.TableName()).Filter("assign_level", l).Filter("assign_key", k).Filter("app_source_type", st).One(&m)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +126,7 @@ func PcSourceAssignInfosOne(id string) (*PcSourceAssignInfos, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("source=[%+v]\n", m)
+	utils.LogDebugf("source=[%+v]\n", m)
 	m.AppSourceVersion = source.App_source_version_code
 	return &m, nil
 }
