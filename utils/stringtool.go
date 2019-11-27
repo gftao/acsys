@@ -35,3 +35,14 @@ func RandomString(length int) string {
 	}
 	return strings.Join(result, "")
 }
+func Krand(size int) []byte {
+	kinds, result := [][]int{[]int{10, 48}, []int{26, 97}, []int{26, 65}}, make([]byte, size)
+
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < size; i++ {
+		ikind := rand.Intn(3)
+		scope, base := kinds[ikind][0], kinds[ikind][1]
+		result[i] = uint8(base + rand.Intn(scope))
+	}
+	return result
+}

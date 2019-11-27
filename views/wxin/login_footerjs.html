@@ -1,0 +1,151 @@
+<!-- iCheck -->
+<script src="/static/plugins/icheck/icheck.min.js"></script>
+<!-- 验证插件 -->
+<script src="/static/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="/static/plugins/jquery-validation/localization/messages_zh.min.js"></script>
+<!-- 针对当前主题进行简单封装，精简代码 -->
+<script src="/static/sdtheme/scripts/sdvalidate.js"></script>
+
+<script>
+    $(function () {
+        pageInit();
+    });
+
+    function pageInit() {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue',
+            increaseArea: '20%' // optional
+        });
+        //验证
+        validateInfo();
+    }
+
+    //表单验证及AJAX提交
+    function validateInfo() {
+        var $thisForm = $('#thisForm');
+        $thisForm.sdvalidate({
+            rules: {
+                add_phone: {
+                    length: 15,
+                    required: true
+                },
+                code: {
+                    length: 6,
+                    required: false
+                },
+            },
+            messages: {
+                add_phone: {
+                    maxlength: "长度15位",
+                    required: "请输入商户号"
+                },
+                code: {
+                    maxlength: "长度6位",
+                    required: "请输入验证码"
+                },
+
+            },
+            submitHandler: function (form) {
+                var url = '{{ urlfor "WxinController.DoLogin"}}';
+                alert("请商户号" + data);
+                var data = $thisForm.serialize();
+                var mcht_cd = $("#add_phone").val();
+                if (mcht_cd == null || mcht_cd == undefined || mcht_cd == "") {
+                    layer.alert("商户号不能为空", {icon: 2, title: '失败'})
+                    return;
+                }
+                var code = $("#code").val();
+                if (code == null || code == undefined || code == "") {
+                    layer.alert("验证码不能为空", {icon: 2, title: '失败'})
+                    return;
+                }
+
+                $.sdpost(url, data, function (re) {
+                    if (re.code === 0) {
+                        alert("请商户号" + data);
+                        window.location.href = '{{ urlfor "WxinController.login"}}';
+                    } else {
+                        layer.alert(re.msg, {icon: 2, title: '失败'})
+                    }
+                });
+                return false;
+            }
+        });
+    }
+
+    function FormSubmit() {
+        $("#thisForm").submit();
+    }
+
+    function getVerificationCode() {
+        var mcht_cd = $("#add_phone").val();
+        if (mcht_cd == null || mcht_cd == undefined || mcht_cd == "") {
+            layer.alert("商户号不能为空", {icon: 2, title: '失败'})
+            return;
+        }
+        var $thisForm = $('#add_phone');
+
+        var url = '{{ urlfor "WxinController.GetVerifyCode"}}';
+        var data = $thisForm.serialize();
+        $.sdpost(url, data, function (re) {
+            if (re.code === 0) {
+                $("#addSendCode").attr("disabled", "true");
+                $("#addSendCode").val("" + 10 + "秒后重新获取").css({"background-color": "#D1D4D3"});
+                // AddInterValObj = window.setInterval(SetAddnTime, 1000); //启动计时器，1秒执行一次
+                fnCountDown();
+            } else {
+                layer.alert(re.msg, {icon: 2, title: '失败'})
+            }
+        });
+        return true;
+    }
+
+    function fnCountDown() {
+        var second = 10;
+        var timer = setInterval(function () {
+            if (second == 0) {
+                window.clearInterval(timer);//停止计时器
+                $("#addSendCode").removeAttr("disabled");//启用按钮
+                $("#addSendCode").val("重新获取验证码").css({"background-color": "#0097a8"});
+            } else {
+                second--;
+                $("#addSendCode").val("" + second + "秒后重新获取").css({"background-color": "#D1D4D3"});
+            }
+        }, 1000);
+    }
+
+    function identifyInput(arg) {
+        var rex = new RegExp("^[0-9]*$");
+        var va = arg.value;
+        if (arg.value) {
+            arg.value = arg.value.replace(/\D/g, '');
+        }
+    }
+
+    function Input() {
+        var $thisForm = $('#thisForm');
+        var url = '{{ urlfor "WxinController.DoLogin"}}';
+        var data = $thisForm.serialize();
+        var mcht_cd = $("#add_phone").val();
+        if (mcht_cd == null || mcht_cd == undefined || mcht_cd == "") {
+            layer.alert("商户号不能为空", {icon: 2, title: '失败'})
+            return;
+        }
+        var code = $("#code").val();
+        if (code == null || code == undefined || code == "") {
+            layer.alert("验证码不能为空", {icon: 2, title: '失败'})
+            return;
+        }
+        //alert("发送绑定" + data);
+        $.sdpost(url, data, function (re) {
+            if (re.code === 0) {
+                //alert("发送绑定成功：" + re.code);
+                window.location.href = '{{ urlfor "WxinController.Login"}}';
+            } else {
+                layer.alert(re.msg, {icon: 2, title: '失败'})
+            }
+        });
+        return false;
+    }
+</script>

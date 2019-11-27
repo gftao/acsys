@@ -69,4 +69,10 @@ func init() {
 	beego.Router(bp("/version/edit/?:Id"), &controllers.VersionController{}, "Get,Post:Edit")
 	beego.Router(bp("/version/uploadimage"), &controllers.VersionController{}, "Post:UploadImage")
 
+	beego.Router(bp("/wxin/index"), &controllers.WxinController{}, "*:Index")
+	beego.Router(bp("/wxin/success"), &controllers.WxinController{}, "*:Login")
+	//beego.Router(bp("/wxin/edit/?:Id"), &controllers.WxinController{}, "Get,Post:Edit")
+	beego.Router(bp("/wxin/GetVerifyCode"), &controllers.WxinController{}, "Post:GetVerifyCode")
+	beego.Router(bp("/wxin/dologin"), &controllers.WxinController{}, "Post:DoLogin")
+
 }
